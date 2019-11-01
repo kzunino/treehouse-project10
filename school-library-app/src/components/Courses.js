@@ -18,6 +18,7 @@ export default class Courses extends Component {
 
   render() {
     //const {context} = this.props;
+    // let courseList = context.courses
     let courseList = this.state.courses;
     let courses;
     if (courseList.length > 0) {
