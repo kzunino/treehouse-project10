@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Link } from 'react-router-dom';
 
 export default class UpdateCourse extends Component {
 
@@ -14,22 +15,23 @@ export default class UpdateCourse extends Component {
   componentDidMount(){
     //match params grabs params from url through destructuring
     const {context, match: {params}} = this.props;
+    this.setState({id: params.id});
     context.actions.getCourseByPk(params.id)
       .then(course => {
         this.setState({
-          course: course
+          course: course,
+          title: course.title,
+          id: course.id,
+          description: course.description,
+          estimatedTime: course.estimatedTime,
+          materialsNeeded: course.materialsNeeded,
         })
       })
   }
 
     render(){
       let {
-        course,
-        title,
-        id,
-        description,
-        estimatedTime,
-        materialsNeeded,
+        course
           } = this.state;
 
       return(
@@ -40,11 +42,11 @@ export default class UpdateCourse extends Component {
               <div className="grid-66">
                 <div className="course--header">
                   <h4 className="course--label">Course</h4>
-                  <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue={course.title} onChange={this.change} value={title}/></div>
+                  <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue={course.title} onChange={this.change}/></div>
                   <p>By {course.userId}</p>
                 </div>
                 <div className="course--description">
-                  <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={course.description} value={description} onChange={this.change}/></div>
+                  <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={course.description} onChange={this.change}/></div>
                 </div>
               </div>
               <div className="grid-25 grid-right">
@@ -52,16 +54,16 @@ export default class UpdateCourse extends Component {
                   <ul className="course--stats--list">
                     <li className="course--stats--list--item">
                       <h4>Estimated Time</h4>
-                      <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue={course.estimatedTime} value={estimatedTime} onChange={this.change}/></div>
+                      <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue={course.estimatedTime} onChange={this.change}/></div>
                     </li>
                     <li className="course--stats--list--item">
                       <h4>Materials Needed</h4>
-                      <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." defaultValue={course.materialsNeeded} value={materialsNeeded} onChange={this.change}/></div>
+                      <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." defaultValue={course.materialsNeeded} onChange={this.change}/></div>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div className="grid-100 pad-bottom"><button className="button" type="submit" onSubmit={this.submit}>Update Course</button><button className="button button-secondary" >Cancel</button></div>
+              <div className="grid-100 pad-bottom"><button className="button" type="submit" onSubmit={this.submit}>Update Course</button><Link to='/'><button className="button button-secondary">Cancel</button></Link></div>
             </form>
           </div>
         </div>
@@ -95,9 +97,8 @@ export default class UpdateCourse extends Component {
           estimatedTime,
           materialsNeeded,
         }
-        context.actions.updateCourse(id, update)
+        context.actions.updateCourse(id, update);
 
       }
-
 
   }

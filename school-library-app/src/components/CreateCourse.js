@@ -23,7 +23,7 @@ export default class CreateCourse extends Component {
                   <p>By Joe Smith</p>
                 </div>
                 <div className="course--description">
-                  <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={""} /></div>
+                  <div><textarea id="description" name="description" className={'true'} placeholder="Course description..." defaultValue={""} /></div>
                 </div>
               </div>
               <div className="grid-25 grid-right">

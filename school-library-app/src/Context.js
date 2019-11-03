@@ -17,6 +17,15 @@ export class Provider extends Component {
     this.data = new Data();
   }
 
+  componentDidMount(){
+    this.getCourses()
+      .then(courses => {
+        this.setState({
+          courses: courses
+        })
+      })
+  }
+
   render() {
     const {authenticatedUser, courses, course} = this.state;
 
@@ -92,9 +101,9 @@ export class Provider extends Component {
     return course;
   }
 
-  updateCourse = async (id, update) => {
+  updateCourse = async (id, update, authenticatedUser) => {
     //returns promise holding courses object
-    const course = await this.data.getCourseByPk(id);
+    const course = await this.data.updateCourse(id, authenticatedUser, update);
     if (course !== null){
       this.setState(() =>{
         return {

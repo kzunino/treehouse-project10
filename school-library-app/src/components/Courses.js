@@ -1,27 +1,28 @@
 import React, {Component} from 'react';
 
 export default class Courses extends Component {
-
-  state = {
-    courses: [],
-  }
+  //
+  // state = {
+  //   courses: [],
+  // }
 
   componentDidMount(){
     const {context} = this.props;
     context.actions.getCourses()
-      .then(courses => {
-        this.setState({
-          courses: courses
-        })
-      })
+      // .then(courses => {
+      //   this.setState({
+      //     courses: courses
+      //   })
+      // })
   }
 
   render() {
-    //const {context} = this.props;
-    // let courseList = context.courses
-    let courseList = this.state.courses;
-    let courses;
-    if (courseList.length > 0) {
+    const {context} = this.props;
+    let courseList = context.courses
+    // let courseList = this.state.courses;
+    if (courseList !== null) {
+      let courses;
+      if (courseList.length > 0) {
        courses = this.state.courses.map((course, index) => {
         return <div key={index} className="grid-33"><a className="course--module course--link" href={'/courses/' + course.id}>
                 <h4 className="course--label">Course</h4>
@@ -29,6 +30,7 @@ export default class Courses extends Component {
               </a></div>
       })
     }
+  }
 
     return (
     <React.Fragment>
