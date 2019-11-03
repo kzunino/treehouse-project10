@@ -20,10 +20,10 @@ export default class Courses extends Component {
     const {context} = this.props;
     let courseList = context.courses
     // let courseList = this.state.courses;
+    let courses;
     if (courseList !== null) {
-      let courses;
       if (courseList.length > 0) {
-       courses = this.state.courses.map((course, index) => {
+       courses = courseList.map((course, index) => {
         return <div key={index} className="grid-33"><a className="course--module course--link" href={'/courses/' + course.id}>
                 <h4 className="course--label">Course</h4>
                 <h3 className="course--title">{course.title}</h3>
@@ -35,6 +35,7 @@ export default class Courses extends Component {
     return (
     <React.Fragment>
       <hr />
+      {}
       <div className="bounds">
         {courses}
         <div className="grid-33"><a className="course--module course--add--module" href="/courses/create">
