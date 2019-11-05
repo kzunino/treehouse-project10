@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Link } from 'react-router-dom';
+import Form from './Form';
 
 export default class UpdateCourse extends Component {
 
@@ -10,13 +10,14 @@ export default class UpdateCourse extends Component {
     description: '',
     estimatedTime: '',
     materialsNeeded: '',
+    errors: [],
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     //match params grabs params from url through destructuring
     const {context, match: {params}} = this.props;
     this.setState({id: params.id});
-    context.actions.getCourseByPk(params.id)
+    await context.actions.getCourseByPk(params.id)
       .then(course => {
         this.setState({
           course: course,
@@ -31,22 +32,29 @@ export default class UpdateCourse extends Component {
 
     render(){
       let {
-        course
+        course,
+        errors
           } = this.state;
 
       return(
         <div className="bounds course--detail">
           <h1>Update Course</h1>
           <div>
-            <form>
+            <Form
+            cancel={this.cancel}
+            errors={errors}
+            submit={this.submit}
+            submitButtonText="Update Course"
+            elements={() =>(
+              <React.Fragment>
               <div className="grid-66">
                 <div className="course--header">
                   <h4 className="course--label">Course</h4>
-                  <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..." defaultValue={course.title} onChange={this.change}/></div>
+                  <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course Title..." defaultValue={course.title} onChange={this.change}/></div>
                   <p>By {course.userId}</p>
                 </div>
                 <div className="course--description">
-                  <div><textarea id="description" name="description" className placeholder="Course description..." defaultValue={course.description} onChange={this.change}/></div>
+                  <div><textarea id="description" name="description"  placeholder="Course Description..." defaultValue={course.description} onChange={this.change}/></div>
                 </div>
               </div>
               <div className="grid-25 grid-right">
@@ -63,8 +71,9 @@ export default class UpdateCourse extends Component {
                   </ul>
                 </div>
               </div>
-              <div className="grid-100 pad-bottom"><button className="button" type="submit" onSubmit={this.submit}>Update Course</button><Link to='/'><button className="button button-secondary">Cancel</button></Link></div>
-            </form>
+              </React.Fragment>
+              )}
+            />
           </div>
         </div>
       )
@@ -81,14 +90,17 @@ export default class UpdateCourse extends Component {
       });
     }
 
-      submit = () => {
+      submit = async () => {
          const {context} = this.props;
+         const username = context.authenticatedUser.emailAddress;
+         const password = context.authenticatedUserPass;
          const {
             title,
             id,
             description,
             estimatedTime,
             materialsNeeded,
+            errors,
           } = this.state;
         // update payload
         const update = {
@@ -97,8 +109,38 @@ export default class UpdateCourse extends Component {
           estimatedTime,
           materialsNeeded,
         }
-        context.actions.updateCourse(id, update);
+        //resets errors state to empty if previous errors exist
+        if(errors){
+          this.setState({errors: []})
+        }
+        //checks to see if the title is blank and updates the state.
+        //spread operator keeps array items as one array instead of adding multiple arrays
+        if (title === ''){
+          this.setState(prevState => ({
+            errors: [...prevState.errors, "Please provide a value for Course Title"]
+          }));
+        }
+        if (description === '') {
+          this.setState(prevState => ({
+            errors: [...prevState.errors, "Please provide a value for Course Description"]
+          }));
+        }
+          await context.actions.updateCourse(id, update, username, password)
+            .then(errors => {
+              if(Object.values(errors).length){
+                this.setState({errors: Object.values(errors)})
+              } else {
+                this.props.history.push('/courses/' + id);
 
+              }
+            }).catch(err => {
+              console.log(err);
+            });
       }
+
+      cancel = () => {
+        const {id} = this.state;
+        this.props.history.push(`/courses/` + id);
+        }
 
   }

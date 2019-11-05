@@ -39,7 +39,7 @@ const authenticateUser = async (req, res, next) => {
              // will have access to the user's information.
              req.currentUser = user;
            } else {
-             message = `Authentication failure for username: ${user.emailAddress}`;
+             message = `Password doesn't match user login: ${user.emailAddress}`;
            }
          } else {
            message = `User not found for username: ${credentials.emailAddress}`;
@@ -68,12 +68,11 @@ router.get('/users', authenticateUser, (req, res) => {
   const user = req.currentUser;
 
   res.json({
-    message: "Welcome",
     firstName: user.firstName,
     lastName: user.lastName,
+    emailAddress: user.emailAddress,
   });
 });
-
 
 
 // Route that creates a new user.

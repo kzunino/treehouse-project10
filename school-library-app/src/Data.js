@@ -83,17 +83,15 @@ export default class Data {
     }
   }
 
-  async updateCourse(id, update, authenticatedUser) {
-    const response = await this.api('/courses/' + id, 'PUT', update, true, authenticatedUser);
-    if (response.status === 200) {
-      return response.json().then(data => data);
-    }
-    else if (response.status === 404) {
-      return response.json().then(data => {
-        return data.errors;
-      });
-    }
-    else {
+  async updateCourse(id, update, username, password) {
+    const response = await this.api('/courses/'+id, 'PUT', update, true, {username, password});
+    if (response.status === 204) {
+      return [];
+
+    } else if (response.status === 401 || response.status === 403 || response.status === 400 ) {
+      return await response.json();
+
+    } else {
       throw new Error();
     }
   }

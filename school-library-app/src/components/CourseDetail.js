@@ -28,7 +28,7 @@ export default class CourseDetail extends Component {
         if (material.length !== 0 ){
           return <li key={index}>{material}</li>
         } else {
-          return <li></li>
+          return <li key={index}></li>
         }
       })
     }
@@ -54,11 +54,11 @@ export default class CourseDetail extends Component {
             <div className="grid-25 grid-right">
               <div className="course--stats">
                 <ul className="course--stats--list">
-                  <li className="course--stats--list--item">
+                  <li key={1} className="course--stats--list--item">
                     <h4>Estimated Time</h4>
                     <h3>{course.estimatedTime}</h3>
                   </li>
-                  <li className="course--stats--list--item">
+                  <li key={2} className="course--stats--list--item">
                     <h4>Materials Needed</h4>
                     <ul>
                       {materialItem}

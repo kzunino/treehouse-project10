@@ -6,9 +6,9 @@ export default class Courses extends Component {
   //   courses: [],
   // }
 
-  componentDidMount(){
+  async componentDidMount(){
     const {context} = this.props;
-    context.actions.getCourses()
+    await context.actions.getCourses()
       // .then(courses => {
       //   this.setState({
       //     courses: courses
@@ -35,7 +35,6 @@ export default class Courses extends Component {
     return (
     <React.Fragment>
       <hr />
-      {}
       <div className="bounds">
         {courses}
         <div className="grid-33"><a className="course--module course--add--module" href="/courses/create">

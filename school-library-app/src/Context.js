@@ -8,6 +8,7 @@ export class Provider extends Component {
 
   state = {
     authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
+    authenticatedUserPass: Cookies.get('authenticatedUserPass') || null,
     courses: null,
     course: null,
   };
@@ -17,8 +18,8 @@ export class Provider extends Component {
     this.data = new Data();
   }
 
-  componentDidMount(){
-    this.getCourses()
+  async componentDidMount(){
+    await this.getCourses()
       .then(courses => {
         this.setState({
           courses: courses
@@ -27,10 +28,11 @@ export class Provider extends Component {
   }
 
   render() {
-    const {authenticatedUser, courses, course} = this.state;
+    const {authenticatedUser, authenticatedUserPass, courses, course} = this.state;
 
     const value = {
       authenticatedUser,
+      authenticatedUserPass,
       courses,
       course,
       data: this.data,
@@ -59,9 +61,11 @@ export class Provider extends Component {
       this.setState(() =>{
         return {
           authenticatedUser: user,
+          authenticatedUserPass: password,
         };
       });
       Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
+      Cookies.set('authenticatedUserPass', password, { expires: 1 });
     }
     return user;
   }
@@ -70,9 +74,11 @@ export class Provider extends Component {
     this.setState(() => {
       return {
         authenticatedUser: null,
+        authenticatedUserPass: null,
       };
     });
     Cookies.remove('authenticatedUser');
+    Cookies.remove('authenticatedUserPass');
   }
 
   getCourses = async () => {
@@ -101,17 +107,12 @@ export class Provider extends Component {
     return course;
   }
 
-  updateCourse = async (id, update, authenticatedUser) => {
+  updateCourse = async (id, update, username, password) => {
     //returns promise holding courses object
-    const course = await this.data.updateCourse(id, authenticatedUser, update);
-    if (course !== null){
-      this.setState(() =>{
-        return {
-          course: course,
-        };
-      });
-    }
-    return course;
+    const updatedCourse = await this.data.updateCourse(id, update, username, password);
+    if (updatedCourse){
+      return updatedCourse;
+    };
   }
 }
 
