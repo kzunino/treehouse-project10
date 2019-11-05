@@ -16,6 +16,7 @@ import CreateCourse from './components/CreateCourse';
 import UserSignIn from './components/UserSignIn';
 import UserSignUp from './components/UserSignUp';
 import UpdateCourse from './components/UpdateCourse';
+import NotFound from './components/NotFound';
 
 //Add Context to Routers
 const HeaderWithContext = withContext(Header);
@@ -24,6 +25,7 @@ const CourseDetailWithContext = withContext(CourseDetail);
 const UpdateCourseWithContext = withContext(UpdateCourse);
 const UserSignInWithContext = withContext(UserSignIn);
 const UserSignOutWithContext = withContext(UserSignOut);
+const UserSignUpWithContext = withContext(UserSignUp);
 
 
 export default () => (
@@ -38,7 +40,8 @@ export default () => (
           <Route path='/courses/:id' component={CourseDetailWithContext} />
           <Route path='/signin' component={UserSignInWithContext} />
           <Route path='/signout' component={UserSignOutWithContext} />
-          <Route path='/signup' component={UserSignUp} />
+          <Route path='/signup' component={UserSignUpWithContext} />
+          <Route component={NotFound} />
       </Switch>
     </div>
   </Router>

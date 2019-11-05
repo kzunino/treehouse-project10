@@ -9,11 +9,7 @@ export default class Courses extends Component {
   async componentDidMount(){
     const {context} = this.props;
     await context.actions.getCourses()
-      // .then(courses => {
-      //   this.setState({
-      //     courses: courses
-      //   })
-      // })
+
   }
 
   render() {

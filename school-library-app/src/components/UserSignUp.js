@@ -8,7 +8,7 @@ export default class UserSignUp extends Component {
   state = {
     firstName: '',
     lastName: '',
-    email: '',
+    emailAddress: '',
     password: '',
     confirmPassword: '',
     errors: [],
@@ -19,7 +19,7 @@ export default class UserSignUp extends Component {
     const {
       firstName,
       lastName,
-      email,
+      emailAddress,
       password,
       confirmPassword,
       errors,
@@ -37,24 +37,24 @@ export default class UserSignUp extends Component {
               elements={() => (
                 <React.Fragment>
                   <input
-                    id="first-name"
+                    id="lastName"
                     name="firstName"
                     type="text"
                     value={firstName}
                     onChange={this.change}
                     placeholder="First Name" />
                   <input
-                    id="last-name"
-                    name="last-name"
+                    id="lastName"
+                    name="lastName"
                     type="text"
                     value={lastName}
                     onChange={this.change}
                     placeholder="Last Name" />
                   <input
-                    id="email"
-                    name="email"
+                    id="emailAddress"
+                    name="emailAddress"
                     type="text"
-                    value={email}
+                    value={emailAddress}
                     onChange={this.change}
                     placeholder="Email Address" />
                   <input
@@ -65,8 +65,8 @@ export default class UserSignUp extends Component {
                     onChange={this.change}
                     placeholder="Password" />
                   <input
-                    id="password"
-                    name="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
                     type="password"
                     value={confirmPassword}
                     onChange={this.change}
@@ -92,26 +92,78 @@ export default class UserSignUp extends Component {
         });
       }
 
-    submit = () => {
+    submit = async () => {
       const { context } = this.props;
-      const {username, password} = this.state;
-      const { from } = this.props.location.state || { from : { pathname: '/' }}
+      const {
+        firstName,
+        lastName,
+        emailAddress,
+        password,
+        confirmPassword,
+        errors
+        } = this.state;
 
-      context.actions.signIn(username, password)
+      //resets errors state to empty if previous errors exist
+      if(errors){
+        this.setState({errors: []})
+      }
+      //checks to see if the title is blank and updates the state.
+      //spread operator keeps array items as one array instead of adding multiple arrays
+      if (firstName === ''){
+        this.setState(prevState => ({
+          errors: [...prevState.errors, "Please provide a value for First Name"]
+        }));
+      }
+      if (lastName === ''){
+        this.setState(prevState => ({
+          errors: [...prevState.errors, "Please provide a value for Last Name"]
+        }));
+      }
+      if (emailAddress === ''){
+        this.setState(prevState => ({
+          errors: [...prevState.errors, "Please provide a value for emailAddress"]
+        }));
+      }
+      if (password === ''){
+        this.setState(prevState => ({
+          errors: [...prevState.errors, "Please provide a value for Password"]
+        }));
+      }
+      if (confirmPassword === ''){
+        this.setState(prevState => ({
+          errors: [...prevState.errors, "Please provide a value for Confirm Password"]
+        }));
+      }
+
+      //conditonal to check if passwords match
+      if(password !== confirmPassword){
+        this.setState(prevState => ({
+          errors: [...prevState.errors, "Passwords do not match"]
+        }));
+      }
+      //new user payload to create
+      const newUser = {
+         firstName,
+         lastName,
+         emailAddress,
+         password
+         };
+
+     /* The Object.values() method returns an array of a given object's own
+        enumerable property values */
+
+       await context.data.createUser(newUser)
         .then( user => {
-          if(user === null){
-            this.setState(() => {
-              return { errors: [ 'Sign-in was unsuccessful' ]};
-            })
-          } else {
-            this.props.history.push(from);
-            console.log(`SUCCESS! ${username} is now signed in!`);
-          }
-        })
-        .catch( err => {
-          console.log(err);
-          this.props.history.push('/error');
-        })
+            if(Object.values(errors).length){
+              this.setState({errors: Object.values(errors)})
+            } else {
+              console.log(`${firstName} has successfully signed up!`);
+              context.actions.signIn(emailAddress, password);
+              this.props.history.push('/');
+            }
+          }).catch(err => {
+            console.log(err);
+          });
     }
 
     cancel = () => {

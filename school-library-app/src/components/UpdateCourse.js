@@ -50,11 +50,27 @@ export default class UpdateCourse extends Component {
               <div className="grid-66">
                 <div className="course--header">
                   <h4 className="course--label">Course</h4>
-                  <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course Title..." defaultValue={course.title} onChange={this.change}/></div>
+                  <div>
+                    <input
+                       id="title"
+                       name="title"
+                       type="text"
+                       className="input-title course--title--input"
+                       placeholder="Course Title..."
+                       defaultValue={course.title}
+                       onChange={this.change}/>
+                   </div>
                   <p>By {course.userId}</p>
                 </div>
                 <div className="course--description">
-                  <div><textarea id="description" name="description"  placeholder="Course Description..." defaultValue={course.description} onChange={this.change}/></div>
+                  <div>
+                    <textarea
+                      id="description"
+                      name="description"
+                      placeholder="Course Description..."
+                      defaultValue={course.description}
+                      onChange={this.change}/>
+                  </div>
                 </div>
               </div>
               <div className="grid-25 grid-right">
@@ -62,11 +78,28 @@ export default class UpdateCourse extends Component {
                   <ul className="course--stats--list">
                     <li className="course--stats--list--item">
                       <h4>Estimated Time</h4>
-                      <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" defaultValue={course.estimatedTime} onChange={this.change}/></div>
+                      <div>
+                        <input
+                          id="estimatedTime"
+                          name="estimatedTime"
+                          type="text"
+                          className="course--time--input"
+                          placeholder="Hours"
+                          defaultValue={course.estimatedTime}
+                          onChange={this.change}/>
+                      </div>
                     </li>
                     <li className="course--stats--list--item">
                       <h4>Materials Needed</h4>
-                      <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." defaultValue={course.materialsNeeded} onChange={this.change}/></div>
+                      <div>
+                        <textarea
+                          id="materialsNeeded"
+                          name="materialsNeeded"
+                          className=""
+                          placeholder="List materials..."
+                          defaultValue={course.materialsNeeded}
+                          onChange={this.change}/>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -125,6 +158,10 @@ export default class UpdateCourse extends Component {
             errors: [...prevState.errors, "Please provide a value for Course Description"]
           }));
         }
+
+      /* The Object.values() method returns an array of a given object's own
+         enumerable property values */
+
           await context.actions.updateCourse(id, update, username, password)
             .then(errors => {
               if(Object.values(errors).length){

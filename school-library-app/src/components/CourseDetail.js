@@ -8,10 +8,10 @@ export default class CourseDetail extends Component {
     course: [],
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     //match params grabs params from url through destructuring
     const {context, match: {params}} = this.props;
-    context.actions.getCourseByPk(params.id)
+    await context.actions.getCourseByPk(params.id)
       .then(course => {
         this.setState({
           course: course
