@@ -19,6 +19,7 @@ export default class UpdateCourse extends Component {
     this.setState({id: params.id});
     await context.actions.getCourseByPk(params.id)
       .then(course => {
+        console.log(course)
         this.setState({
           course: course,
           title: course.title,
@@ -159,8 +160,9 @@ export default class UpdateCourse extends Component {
           }));
         }
 
+
       /* The Object.values() method returns an array of a given object's own
-         enumerable property values */
+         enumerable property values MDN-Docs */
 
           await context.actions.updateCourse(id, update, username, password)
             .then(errors => {

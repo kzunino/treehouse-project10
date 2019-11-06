@@ -67,20 +67,28 @@ router.get("/courses", async (req, res, next) => {
   }
 });
 
-//returns a specific course
+//returns a specific course and user details
 router.get("/courses/:id", async (req, res, next) => {
   try {
     const course = await Course.findByPk(req.params.id, {
       attributes: [
         'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
-      ]
+      ],
+      include: [{
+        model: User, // load all users
+        as: 'User',
+        attributes: {
+          include:['id', 'firstName', 'lastName', 'emailAddress']
+     }
+    }
+  ]
     });
     if (course){
-      let id = course.userId;
-      const user = await User.findByPk(id)
-        if (user){
-          course.userId = user.firstName + " " + user.lastName;
-        }
+      // let id = course.userId;
+      // const user = await User.findByPk(id)
+      //   if (user){
+      //     course.userId = user.firstName + " " + user.lastName;
+      //   }
       res.json(course).status(200).end();
     } else {
       res.status(404).json({

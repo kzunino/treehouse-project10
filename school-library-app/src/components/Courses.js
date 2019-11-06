@@ -1,21 +1,15 @@
 import React, {Component} from 'react';
 
 export default class Courses extends Component {
-  //
-  // state = {
-  //   courses: [],
-  // }
 
   async componentDidMount(){
     const {context} = this.props;
     await context.actions.getCourses()
-
   }
 
   render() {
     const {context} = this.props;
     let courseList = context.courses
-    // let courseList = this.state.courses;
     let courses;
     if (courseList !== null) {
       if (courseList.length > 0) {

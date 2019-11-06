@@ -13,19 +13,30 @@ export default class CourseDetail extends Component {
     const {context, match: {params}} = this.props;
     await context.actions.getCourseByPk(params.id)
       .then(course => {
+        //why cant I use 404 here like what data returns?
+        if (course === undefined) {
+          this.props.history.push('/error');
+        } else {
         this.setState({
           course: course
         })
-      })
+      }
+    })
   }
 
   render() {
+    const {context} = this.props;
     const course = this.state.course;
+
+    // const authUser = ()=> {
+    //   if context.authenticatedUser.id === course.userId;
+    // }
+
     let materialItem;
     if (course.materialsNeeded !== null){
       let materials = String(course.materialsNeeded).split('*');
       materialItem = materials.map((material, index) => {
-        if (material.length !== 0 ){
+        if (material.length !== 0){
           return <li key={index}>{material}</li>
         } else {
           return <li key={index}></li>
@@ -37,7 +48,17 @@ export default class CourseDetail extends Component {
         <div>
           <div className="actions--bar">
             <div className="bounds">
-              <div className="grid-100"><span><a className="button" href={"/courses/"+ course.id + "/update"}>Update Course</a><a className="button" href="/">Delete Course</a></span><a className="button button-secondary" href="/">Return to List</a></div>
+              <div className="grid-100">
+
+
+                  <span>
+                    <a className="button" href={"/courses/"+ course.id + "/update"}>Update Course</a>
+                    <a className="button" href="/">Delete Course</a>
+                  </span>
+
+                  <span></span>
+                
+                <a className="button button-secondary" href="/">Return to List</a></div>
             </div>
           </div>
           <div className="bounds course--detail">

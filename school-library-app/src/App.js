@@ -5,7 +5,9 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
+
 import withContext from './Context';
+import PrivateRoute from './PrivateRoute';
 
 //Import components
 import Header from './components/Header';
@@ -35,8 +37,8 @@ export default () => (
 
       <Switch>
           <Route exact path='/' component={CoursesWithContext} />
-          <Route path='/courses/create' component={CreateCourse} />
-          <Route path='/courses/:id/update' component={UpdateCourseWithContext} />
+          <PrivateRoute path='/courses/create' component={CreateCourse} />
+          <PrivateRoute path='/courses/:id/update' component={UpdateCourseWithContext} />
           <Route path='/courses/:id' component={CourseDetailWithContext} />
           <Route path='/signin' component={UserSignInWithContext} />
           <Route path='/signout' component={UserSignOutWithContext} />
