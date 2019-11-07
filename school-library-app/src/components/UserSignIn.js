@@ -77,7 +77,6 @@ submit = () => {
       } else {
         this.props.history.push(from);
         console.log(`SUCCESS! ${username} is now signed in!`);
-        //context.setState({ authenticatedUserPass: password})
       }
     })
     .catch( err => {

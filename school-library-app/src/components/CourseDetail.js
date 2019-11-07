@@ -6,6 +6,7 @@ export default class CourseDetail extends Component {
 
   state = {
     course: [],
+    user: [],
   }
 
   async componentDidMount(){
@@ -18,7 +19,8 @@ export default class CourseDetail extends Component {
           this.props.history.push('/error');
         } else {
         this.setState({
-          course: course
+          course: course,
+          user: course.User
         })
       }
     })
@@ -26,12 +28,18 @@ export default class CourseDetail extends Component {
 
   render() {
     const {context} = this.props;
-    const course = this.state.course;
+    const {course, user} = this.state;
+    let authUser = false;
 
-    // const authUser = ()=> {
-    //   if context.authenticatedUser.id === course.userId;
-    // }
+    if (context.authenticatedUser !== null){
+      if(context.authenticatedUser.id === user.id){
+        authUser = true;
+      } else {
+        authUser = false;
+      }
+    }
 
+    //find a way to delete that first blank bullet point
     let materialItem;
     if (course.materialsNeeded !== null){
       let materials = String(course.materialsNeeded).split('*');
@@ -49,15 +57,15 @@ export default class CourseDetail extends Component {
           <div className="actions--bar">
             <div className="bounds">
               <div className="grid-100">
-
-
+                {authUser
+                  ?
                   <span>
                     <a className="button" href={"/courses/"+ course.id + "/update"}>Update Course</a>
                     <a className="button" href="/">Delete Course</a>
                   </span>
-
+                  :
                   <span></span>
-                
+                }
                 <a className="button button-secondary" href="/">Return to List</a></div>
             </div>
           </div>
@@ -66,7 +74,7 @@ export default class CourseDetail extends Component {
               <div className="course--header">
                 <h4 className="course--label">Course</h4>
                 <h3 className="course--title">{course.title}</h3>
-                <p>{course.userId}</p>
+                <p>{user.firstName + ' ' + user.lastName}</p>
               </div>
               <div className="course--description">
                 <p>{course.description}</p>

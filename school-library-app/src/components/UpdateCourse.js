@@ -4,6 +4,7 @@ import Form from './Form';
 export default class UpdateCourse extends Component {
 
   state = {
+    user: [],
     course: [],
     title: '',
     id: '',
@@ -19,8 +20,8 @@ export default class UpdateCourse extends Component {
     this.setState({id: params.id});
     await context.actions.getCourseByPk(params.id)
       .then(course => {
-        console.log(course)
         this.setState({
+          user: course.User,
           course: course,
           title: course.title,
           id: course.id,
@@ -32,7 +33,9 @@ export default class UpdateCourse extends Component {
   }
 
     render(){
+
       let {
+        user,
         course,
         errors
           } = this.state;
@@ -61,7 +64,7 @@ export default class UpdateCourse extends Component {
                        defaultValue={course.title}
                        onChange={this.change}/>
                    </div>
-                  <p>By {course.userId}</p>
+                  <p>By {user.firstName + ' ' + user.lastName}</p>
                 </div>
                 <div className="course--description">
                   <div>
@@ -136,46 +139,47 @@ export default class UpdateCourse extends Component {
             materialsNeeded,
             errors,
           } = this.state;
-        // update payload
-        const update = {
-          title,
-          description,
-          estimatedTime,
-          materialsNeeded,
-        }
-        //resets errors state to empty if previous errors exist
-        if(errors){
-          this.setState({errors: []})
-        }
-        //checks to see if the title is blank and updates the state.
-        //spread operator keeps array items as one array instead of adding multiple arrays
-        if (title === ''){
-          this.setState(prevState => ({
-            errors: [...prevState.errors, "Please provide a value for Course Title"]
-          }));
-        }
-        if (description === '') {
-          this.setState(prevState => ({
-            errors: [...prevState.errors, "Please provide a value for Course Description"]
-          }));
-        }
+
+          // update payload
+          const update = {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded,
+          }
+          //resets errors state to empty if previous rendered errors exist * stops duplicates
+          if(errors){
+            this.setState({errors: []})
+          }
+          //checks to see if the title is blank and updates the state.
+          //spread operator keeps array items as one array instead of adding multiple arrays
+          if (title === ''){
+            this.setState(prevState => ({
+              errors: [...prevState.errors, "Please provide a value for Course Title"]
+            }));
+          }
+          if (description === '') {
+            this.setState(prevState => ({
+              errors: [...prevState.errors, "Please provide a value for Course Description"]
+            }));
+          }
 
 
-      /* The Object.values() method returns an array of a given object's own
-         enumerable property values MDN-Docs */
+        /* The Object.values() method returns an array of a given object's own
+           enumerable property values MDN-Docs */
 
-          await context.actions.updateCourse(id, update, username, password)
-            .then(errors => {
-              if(Object.values(errors).length){
-                this.setState({errors: Object.values(errors)})
-              } else {
-                this.props.history.push('/courses/' + id);
-
-              }
-            }).catch(err => {
-              console.log(err);
-            });
-      }
+        //updateCourse either returns empty array or validation errors
+        await context.actions.updateCourse(id, update, username, password)
+          .then(errors => {
+            if(Object.values(errors).length){
+              this.setState({errors: Object.values(errors)})
+            } else {
+              this.props.history.push('/courses/' + id);
+            }
+          }).catch(err => {
+            console.log(err);
+          });
+  }
 
       cancel = () => {
         const {id} = this.state;
