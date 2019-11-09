@@ -11,6 +11,7 @@ export class Provider extends Component {
     authenticatedUserPass: Cookies.get('authenticatedUserPass') || null,
     courses: null,
     course: null,
+    newCourseId: null,
   };
 
   constructor() {
@@ -28,7 +29,7 @@ export class Provider extends Component {
   }
 
   render() {
-    const {authenticatedUser, authenticatedUserPass, courses, course} = this.state;
+    const {authenticatedUser, authenticatedUserPass, courses, course, newCourseId} = this.state;
 
     const value = {
       authenticatedUser,
@@ -43,6 +44,8 @@ export class Provider extends Component {
         getCourses: this.getCourses,
         getCourseByPk: this.getCourseByPk,
         updateCourse: this.updateCourse,
+        createCourse: this.createCourse,
+        deleteCourse: this.deleteCourse,
       },
     };
 
@@ -113,6 +116,23 @@ export class Provider extends Component {
     if (updatedCourse){
       return updatedCourse;
     };
+  }
+
+  createCourse = async (courseInfo, username, password) => {
+    //returns promise holding courses object
+    const newCourse = await this.data.createCourse(courseInfo, username, password);
+    if (newCourse){
+      return newCourse;
+    };
+  }
+
+  deleteCourse = async (id, username, password) => {
+    const courseDelete = await this.data.deleteCourse(id, username, password);
+      if(courseDelete === 204){
+        return 204;
+    } else {
+      return courseDelete;
+    }
   }
 }
 

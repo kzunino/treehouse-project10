@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-//import {  } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 export default class CourseDetail extends Component {
@@ -60,13 +60,14 @@ export default class CourseDetail extends Component {
                 {authUser
                   ?
                   <span>
-                    <a className="button" href={"/courses/"+ course.id + "/update"}>Update Course</a>
-                    <a className="button" href="/">Delete Course</a>
+                    <Link className="button" to={"/courses/"+ course.id + "/update"}>Update Course</Link>
+                    <a className="button" onClick={this.delete}>Delete Course</a>
                   </span>
                   :
                   <span></span>
                 }
-                <a className="button button-secondary" href="/">Return to List</a></div>
+                <Link className="button button-secondary" to="/">Return to List</Link>
+              </div>
             </div>
           </div>
           <div className="bounds course--detail">
@@ -99,5 +100,21 @@ export default class CourseDetail extends Component {
           </div>
         </div>
     )
+  }
+
+  delete = async () => {
+    const {context, match: {params}} = this.props;
+    const username = context.authenticatedUser.emailAddress;
+    const password = context.authenticatedUserPass;
+    const id = params.id;
+    await context.actions.deleteCourse(id, username, password)
+      .then(response => {
+        if(response === 204){
+          this.props.history.push('/');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }

@@ -76,19 +76,11 @@ router.get("/courses/:id", async (req, res, next) => {
       ],
       include: [{
         model: User, // load all users
-        as: 'User',
-        attributes: {
-          include:['id', 'firstName', 'lastName', 'emailAddress']
+        attributes:['id', 'firstName', 'lastName', 'emailAddress']
      }
-    }
   ]
     });
     if (course){
-      // let id = course.userId;
-      // const user = await User.findByPk(id)
-      //   if (user){
-      //     course.userId = user.firstName + " " + user.lastName;
-      //   }
       res.json(course).status(200).end();
     } else {
       res.status(404).json({

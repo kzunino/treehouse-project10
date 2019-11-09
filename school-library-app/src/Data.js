@@ -87,8 +87,29 @@ export default class Data {
       return [];
 
     } else if (response.status === 401 || response.status === 403 || response.status === 400 ) {
-      return await response.json();
+      return response.json();
 
+    } else {
+      throw new Error();
+    }
+  }
+
+  async createCourse(courseInfo, username, password) {
+    const response = await this.api('/courses', 'POST', courseInfo, true, {username, password});
+    if (response.status === 201) {
+      return response;
+
+    } else {
+      throw new Error();
+    }
+  }
+
+  async deleteCourse(id, username, password){
+    const response = await this.api('/courses/' + id, 'DELETE', null, true, {username, password});
+    if (response.status === 204){
+      return 204;
+    } else if (response.status === 403 || response.status === 404){
+      return response.json();
     } else {
       throw new Error();
     }

@@ -41,7 +41,7 @@ export default class UpdateCourse extends Component {
           } = this.state;
 
       return(
-        <div className="bounds course--detail">
+        <div className="bounds course--update">
           <h1>Update Course</h1>
           <div>
             <Form
