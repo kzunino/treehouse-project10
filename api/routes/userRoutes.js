@@ -123,7 +123,7 @@ router.post('/users',[
   } catch (error){
     if(error.name === "SequelizeUniqueConstraintError"){
       res.status(501).json({
-        error: "Email for user already exists"
+        errors: ["Email for user already exists"]
       })
     }
     next(error)

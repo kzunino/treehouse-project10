@@ -107,36 +107,9 @@ export default class UserSignUp extends Component {
       if(errors){
         this.setState({errors: []})
       }
-      //checks to see if the title is blank and updates the state.
-      //spread operator keeps array items as one array instead of adding multiple arrays
-      if (firstName === ''){
-        this.setState(prevState => ({
-          errors: [...prevState.errors, "Please provide a value for First Name"]
-        }));
-      }
-      if (lastName === ''){
-        this.setState(prevState => ({
-          errors: [...prevState.errors, "Please provide a value for Last Name"]
-        }));
-      }
-      if (emailAddress === ''){
-        this.setState(prevState => ({
-          errors: [...prevState.errors, "Please provide a value for emailAddress"]
-        }));
-      }
-      if (password === ''){
-        this.setState(prevState => ({
-          errors: [...prevState.errors, "Please provide a value for Password"]
-        }));
-      }
-      if (confirmPassword === ''){
-        this.setState(prevState => ({
-          errors: [...prevState.errors, "Please provide a value for Confirm Password"]
-        }));
-      }
 
       //conditonal to check if passwords match
-      if(password !== confirmPassword){
+      if (password !== confirmPassword){
         this.setState(prevState => ({
           errors: [...prevState.errors, "Passwords do not match"]
         }));
@@ -149,13 +122,18 @@ export default class UserSignUp extends Component {
          password
          };
 
-     /* The Object.values() method returns an array of a given object's own
-        enumerable property values */
-
        await context.data.createUser(newUser)
-        .then( user => {
-            if(Object.values(errors).length){
-              this.setState({errors: Object.values(errors)})
+        .then( error => {
+            //returns error as response object OR status code
+            if (error === 500) {
+              this.props.history.push('/error');
+
+            } else if (error){
+              //renders object containing array of errors from API
+              this.setState({
+                errors: Object.values(error.errors) 
+              })
+
             } else {
               console.log(`${firstName} has successfully signed up!`);
               context.actions.signIn(emailAddress, password);
@@ -164,7 +142,7 @@ export default class UserSignUp extends Component {
           }).catch(err => {
             console.log(err);
           });
-    }
+   }
 
     cancel = () => {
       this.props.history.push('/');

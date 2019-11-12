@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 
 export default class CourseDetail extends Component {
@@ -15,8 +16,12 @@ export default class CourseDetail extends Component {
     await context.actions.getCourseByPk(params.id)
       .then(course => {
         //why cant I use 404 here like what data returns?
-        if (course === undefined) {
+        if (course === 404) {
+          this.props.history.push('/notFound');
+
+        } else if (course === 500) {
           this.props.history.push('/error');
+
         } else {
         this.setState({
           course: course,
@@ -39,19 +44,6 @@ export default class CourseDetail extends Component {
       }
     }
 
-    //find a way to delete that first blank bullet point
-    let materialItem;
-    if (course.materialsNeeded !== null){
-      let materials = String(course.materialsNeeded).split('*');
-      materialItem = materials.map((material, index) => {
-        if (material.length !== 0){
-          return <li key={index}>{material}</li>
-        } else {
-          return <li key={index}></li>
-        }
-      })
-    }
-
     return (
         <div>
           <div className="actions--bar">
@@ -61,7 +53,7 @@ export default class CourseDetail extends Component {
                   ?
                   <span>
                     <Link className="button" to={"/courses/"+ course.id + "/update"}>Update Course</Link>
-                    <a className="button" onClick={this.delete}>Delete Course</a>
+                    <button className="button" onClick={this.delete}>Delete Course</button>
                   </span>
                   :
                   <span></span>
@@ -78,7 +70,7 @@ export default class CourseDetail extends Component {
                 <p>{user.firstName + ' ' + user.lastName}</p>
               </div>
               <div className="course--description">
-                <p>{course.description}</p>
+                  <ReactMarkdown source={course.description} />
               </div>
             </div>
             <div className="grid-25 grid-right">
@@ -91,7 +83,7 @@ export default class CourseDetail extends Component {
                   <li key={2} className="course--stats--list--item">
                     <h4>Materials Needed</h4>
                     <ul>
-                      {materialItem}
+                      <ReactMarkdown source={course.materialsNeeded} />
                     </ul>
                   </li>
                 </ul>
@@ -109,8 +101,10 @@ export default class CourseDetail extends Component {
     const id = params.id;
     await context.actions.deleteCourse(id, username, password)
       .then(response => {
-        if(response === 204){
+        if (response === 204) {
           this.props.history.push('/');
+        } else if (response === 500) {
+          this.props.history.push('/error');
         }
       })
       .catch(err => {

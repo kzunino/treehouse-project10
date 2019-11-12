@@ -128,32 +128,27 @@ export default class CreateCourse extends Component {
           if(errors){
             this.setState({errors: []})
           }
-          //checks to see if the title is blank and updates the state.
-          //spread operator keeps array items as one array instead of adding multiple arrays
-          if (title === ''){
-            this.setState(prevState => ({
-              errors: [...prevState.errors, "Please provide a value for Course Title"]
-            }));
-          }
-          if (description === '') {
-            this.setState(prevState => ({
-              errors: [...prevState.errors, "Please provide a value for Course Description"]
-            }));
-          }
-
 
         /* The Object.values() method returns an array of a given object's own
            enumerable property values MDN-Docs */
 
         //Create Course either returns empty array or validation errors
         await context.actions.createCourse(courseInfo, username, password)
-        //if 201 response then return to courses
           .then(response => {
-              if(response.status === 201){
-                console.log(response)
-                this.props.history.push("/");
-              };
-          }).catch(err => {
+            //if 201 response then return to courses
+            if(response === 201){
+              this.props.history.push("/");
+
+            } else if (response === 500) {
+              this.props.history.push('/error');
+
+            } else if (response) {
+                this.setState({
+                  errors: Object.values(response.errors)
+                });
+          }
+        })
+          .catch(err => {
             console.log(err);
           });
       }

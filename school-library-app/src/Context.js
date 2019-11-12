@@ -11,7 +11,6 @@ export class Provider extends Component {
     authenticatedUserPass: Cookies.get('authenticatedUserPass') || null,
     courses: null,
     course: null,
-    newCourseId: null,
   };
 
   constructor() {
@@ -29,7 +28,7 @@ export class Provider extends Component {
   }
 
   render() {
-    const {authenticatedUser, authenticatedUserPass, courses, course, newCourseId} = this.state;
+    const {authenticatedUser, authenticatedUserPass, courses, course} = this.state;
 
     const value = {
       authenticatedUser,
@@ -100,7 +99,7 @@ export class Provider extends Component {
   getCourseByPk = async (id) => {
     //returns promise holding courses object
     const course = await this.data.getCourseByPk(id);
-    if (course !== null){
+    if (course !== null || course !== 404){
       this.setState(() =>{
         return {
           course: course,

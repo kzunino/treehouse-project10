@@ -95,10 +95,10 @@ router.get("/courses/:id", async (req, res, next) => {
 //Protected route to post a new course linked to authenitcated userId.
 router.post('/courses', authenticateUser, [
   check('title')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "title"'),
   check('description')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "description"'),
 ], async (req, res, next) => {
   try {
@@ -135,10 +135,10 @@ router.post('/courses', authenticateUser, [
 //Protected route that updates the course information.
 router.put("/courses/:id", authenticateUser, [
   check('title')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "title"'),
   check('description')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "description"'),
 ], async (req, res, next) => {
   try {
@@ -166,12 +166,12 @@ router.put("/courses/:id", authenticateUser, [
         res.status(204).end();
       } else {
         res.status(403).json({
-          error: "Course not associated with user"
+          errors: ["Course not associated with user"]
         })
       }
     } else {
       res.status(400).json({
-        message: 'Course Not Found',
+        errors: ['Course Not Found'],
         });
     }
   } catch (error) {

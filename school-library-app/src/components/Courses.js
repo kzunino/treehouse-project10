@@ -5,6 +5,15 @@ export default class Courses extends Component {
   async componentDidMount(){
     const {context} = this.props;
     await context.actions.getCourses()
+    .then(response => {
+
+    if (response === 500) {
+      this.props.history.push('/error');
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   render() {

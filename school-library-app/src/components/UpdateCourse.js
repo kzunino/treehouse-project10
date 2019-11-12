@@ -18,18 +18,33 @@ export default class UpdateCourse extends Component {
     //match params grabs params from url through destructuring
     const {context, match: {params}} = this.props;
     this.setState({id: params.id});
+    const authenticatedUserId = context.authenticatedUser.id;
+
     await context.actions.getCourseByPk(params.id)
       .then(course => {
-        this.setState({
-          user: course.User,
-          course: course,
-          title: course.title,
-          id: course.id,
-          description: course.description,
-          estimatedTime: course.estimatedTime,
-          materialsNeeded: course.materialsNeeded,
-        })
-      })
+        if (course === 404){
+          this.props.history.push('/notFound');
+        } else if (course === 500) {
+          this.props.history.push('/error');
+        } else {
+          this.setState({
+            user: course.User,
+            course: course,
+            title: course.title,
+            id: course.id,
+            description: course.description,
+            estimatedTime: course.estimatedTime,
+            materialsNeeded: course.materialsNeeded,
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    //if userId and courseId do not match render forbidden.
+    const courseUserId = this.state.course.userId;
+    if (authenticatedUserId !== courseUserId){
+        this.props.history.push('/forbidden')
+    }
   }
 
     render(){
@@ -99,7 +114,7 @@ export default class UpdateCourse extends Component {
                         <textarea
                           id="materialsNeeded"
                           name="materialsNeeded"
-                          className=""
+                          className="course--materials--input"
                           placeholder="List materials..."
                           defaultValue={course.materialsNeeded}
                           onChange={this.change}/>
@@ -151,19 +166,6 @@ export default class UpdateCourse extends Component {
           if(errors){
             this.setState({errors: []})
           }
-          //checks to see if the title is blank and updates the state.
-          //spread operator keeps array items as one array instead of adding multiple arrays
-          if (title === ''){
-            this.setState(prevState => ({
-              errors: [...prevState.errors, "Please provide a value for Course Title"]
-            }));
-          }
-          if (description === '') {
-            this.setState(prevState => ({
-              errors: [...prevState.errors, "Please provide a value for Course Description"]
-            }));
-          }
-
 
         /* The Object.values() method returns an array of a given object's own
            enumerable property values MDN-Docs */
@@ -171,10 +173,17 @@ export default class UpdateCourse extends Component {
         //updateCourse either returns empty array or validation errors
         await context.actions.updateCourse(id, update, username, password)
           .then(errors => {
-            if(Object.values(errors).length){
-              this.setState({errors: Object.values(errors)})
-            } else {
+            if (errors === 204) {
               this.props.history.push('/courses/' + id);
+
+            } else if (errors === 500) {
+              this.props.history.push('/error');
+
+            //if errors exist <Form /> renders error display
+            } else if (errors){
+              this.setState({
+                errors: Object.values(errors.errors)
+              })
             }
           }).catch(err => {
             console.log(err);

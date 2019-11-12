@@ -74,6 +74,10 @@ submit = () => {
         this.setState(() => {
           return { errors: [ 'Sign-in was unsuccessful' ]};
         })
+
+      } else if (user === 500) {
+          this.props.history.push('/error');
+
       } else {
         this.props.history.push(from);
         console.log(`SUCCESS! ${username} is now signed in!`);
