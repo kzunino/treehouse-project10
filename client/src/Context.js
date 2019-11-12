@@ -48,6 +48,8 @@ export class Provider extends Component {
       },
     };
 
+//returns provider components with value prop
+//this.props.children passes in all props to components
     return (
       <Context.Provider value={value}>
         {this.props.children}
@@ -59,6 +61,7 @@ export class Provider extends Component {
   signIn = async (username, password) => {
     //returns promis holding object with name and username
     const user = await this.data.getUser(username, password);
+    //if errors exists, return errors object
     if (user.errors !== undefined){
       return user;
 

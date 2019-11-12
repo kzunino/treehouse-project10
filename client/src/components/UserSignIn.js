@@ -73,6 +73,8 @@ submit = () => {
     this.setState({errors: []})
   }
 
+  //client side !empty validations
+  //prevState stops overwriting errors
   if(username === ""){
     this.setState(prevState => ({
       errors: [...prevState.errors, "Please fill out User Name field"]

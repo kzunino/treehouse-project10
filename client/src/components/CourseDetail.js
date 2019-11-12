@@ -15,7 +15,6 @@ export default class CourseDetail extends Component {
     const {context, match: {params}} = this.props;
     await context.actions.getCourseByPk(params.id)
       .then(course => {
-        //why cant I use 404 here like what data returns?
         if (course === 404) {
           this.props.history.push('/notFound');
 
@@ -36,6 +35,7 @@ export default class CourseDetail extends Component {
     const {course, user} = this.state;
     let authUser = false;
 
+//if authenticatedUserId matches userId of course, show buttons to delete or update
     if (context.authenticatedUser !== null){
       if(context.authenticatedUser.id === user.id){
         authUser = true;
@@ -99,6 +99,8 @@ export default class CourseDetail extends Component {
     const username = context.authenticatedUser.emailAddress;
     const password = context.authenticatedUserPass;
     const id = params.id;
+
+    //passes user information to api to delete course
     await context.actions.deleteCourse(id, username, password)
       .then(response => {
         if (response === 204) {

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 export default class Courses extends Component {
 
+//gets list of courses from api
   async componentDidMount(){
     const {context} = this.props;
     await context.actions.getCourses()
@@ -20,6 +21,8 @@ export default class Courses extends Component {
     const {context} = this.props;
     let courseList = context.courses
     let courses;
+
+    //creates divs for each course in the database 
     if (courseList !== null) {
       if (courseList.length > 0) {
        courses = courseList.map((course, index) => {

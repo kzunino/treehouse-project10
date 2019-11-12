@@ -22,10 +22,13 @@ export default class UpdateCourse extends Component {
 
     await context.actions.getCourseByPk(params.id)
       .then(course => {
+
         if (course === 404){
           this.props.history.push('/notFound');
+
         } else if (course === 500) {
           this.props.history.push('/error');
+
         } else {
           this.setState({
             user: course.User,

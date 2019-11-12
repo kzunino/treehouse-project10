@@ -2,6 +2,7 @@ import config from './config';
 
 export default class Data {
   api(path, method = 'GET', body = null, requiresAuth = false, credentials = null) {
+    //config gives rout to api + path for type of request
     const url = config.apiBaseUrl + path;
 
     const options = {

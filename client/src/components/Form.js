@@ -23,6 +23,8 @@ export default (props) => {
     <div>
       <ErrorsDisplay errors={errors} />
       <form onSubmit={handleSubmit}>
+        {/* elements are generated from function in <Form /> component
+            because each form has different input fields */}
         {elements()}
         <div className="grid-100 pad-bottom">
           <button className="button" type="submit">{submitButtonText}</button>
@@ -33,6 +35,8 @@ export default (props) => {
   );
 }
 
+
+//if there are errors the errors will be rendered.
 function ErrorsDisplay({ errors }) {
   let errorsDisplay = null;
 
