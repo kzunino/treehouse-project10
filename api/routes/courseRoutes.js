@@ -6,6 +6,17 @@ const { check, validationResult } = require('express-validator');
 const bcryptjs = require('bcryptjs');
 const auth = require('basic-auth');
 
+//Middware to handle async/await
+function asyncHandler(cb){
+  return async (req, res, next)=>{
+    try {
+      await cb(req,res, next);
+    } catch(err){
+      next(err);
+    }
+  };
+}
+
 // authentication middleware
 const authenticateUser = async (req, res, next) => {
   try {
@@ -51,46 +62,79 @@ const authenticateUser = async (req, res, next) => {
 };
 
 //Route to find all courses
-router.get("/courses", async (req, res, next) => {
-  try {
-    // const course = await Course.sequelize.query(
-    //   "SELECT id, userId, title, description, materialsNeeded, estimatedTime FROM Courses"
-    // );
-    const course = await Course.findAll({
-      attributes: [
-        'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
-      ]
-    });
+// router.get("/courses", async (req, res, next) => {
+//   try {
+//     // const course = await Course.sequelize.query(
+//     //   "SELECT id, userId, title, description, materialsNeeded, estimatedTime FROM Courses"
+//     // );
+//     const course = await Course.findAll({
+//       attributes: [
+//         'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
+//       ]
+//     });
+//     res.json(course);
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
+
+router.get("/courses", asyncHandler(async(req,res) =>{
+  // const course = await Course.sequelize.query(
+  //   "SELECT id, userId, title, description, materialsNeeded, estimatedTime FROM Courses"
+  // );
+  const course = await Course.findAll({
+    attributes: [
+      'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
+    ]
+  });
     res.json(course);
-  } catch (error) {
-    return next(error);
-  }
-});
+}));
 
 //returns a specific course and user details
-router.get("/courses/:id", async (req, res, next) => {
-  try {
-    const course = await Course.findByPk(req.params.id, {
-      attributes: [
-        'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
-      ],
-      include: [{
-        model: User, // load all users
-        attributes:['id', 'firstName', 'lastName', 'emailAddress']
-     }
-  ]
-    });
-    if (course){
-      res.json(course).status(200).end();
-    } else {
-      res.status(404).json({
-        message: 'Course Not Found',
-        });
-    }
-  } catch (error) {
-    return next(error);
+router.get("/courses/:id", asyncHandler(async (req,res) =>{
+  const course = await Course.findByPk(req.params.id, {
+    attributes: [
+      'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
+    ],
+    include: [{
+      model: User, // load all users
+      attributes:['id', 'firstName', 'lastName', 'emailAddress']
+      }]
+  });
+  if (course){
+    res.json(course).status(200).end();
+  } else {
+    res.status(404).json({
+      message: 'Course Not Found',
+      });
   }
-});
+}));
+
+
+// //returns a specific course and user details
+// router.get("/courses/:id", async (req, res, next) => {
+//   try {
+//     const course = await Course.findByPk(req.params.id, {
+//       attributes: [
+//         'id', 'userId', 'title', 'description', 'materialsNeeded', 'estimatedTime'
+//       ],
+//       include: [{
+//         model: User, // load all users
+//         attributes:['id', 'firstName', 'lastName', 'emailAddress']
+//      }
+//   ]
+//     });
+//     if (course){
+//       res.json(course).status(200).end();
+//     } else {
+//       res.status(404).json({
+//         message: 'Course Not Found',
+//         });
+//     }
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
 
 //Protected route to post a new course linked to authenitcated userId.
 router.post('/courses', authenticateUser, [
@@ -100,8 +144,7 @@ router.post('/courses', authenticateUser, [
   check('description')
     .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "description"'),
-], async (req, res, next) => {
-  try {
+], asyncHandler(async (req, res) => {
     const errors = validationResult(req);
 
     // If there are validation errors...
@@ -127,10 +170,7 @@ router.post('/courses', authenticateUser, [
 
     // Set the status to 201 Created and end the response.
     res.status(201).location('/api/courses/' + newCourse.id).end();
-  } catch (error){
-    next(error)
-  }
-});
+}));
 
 //Protected route that updates the course information.
 router.put("/courses/:id", authenticateUser, [
@@ -140,8 +180,7 @@ router.put("/courses/:id", authenticateUser, [
   check('description')
     .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "description"'),
-], async (req, res, next) => {
-  try {
+], asyncHandler(async (req, res)=> {
     const errors = validationResult(req);
     // If there are validation errors...
     if (!errors.isEmpty()) {
@@ -174,14 +213,10 @@ router.put("/courses/:id", authenticateUser, [
         errors: ['Course Not Found'],
         });
     }
-  } catch (error) {
-    return next(error);
-  }
-});
+}));
 
 //Protected route that deletes a course
-router.delete("/courses/:id", authenticateUser, async (req, res, next) => {
-  try {
+router.delete("/courses/:id", authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
       let userId = req.currentUser.id;
@@ -198,10 +233,7 @@ router.delete("/courses/:id", authenticateUser, async (req, res, next) => {
         message: 'Course Not Found',
         });
     }
-  } catch (error) {
-    return next(error);
-  }
-});
+}));
 
 
 
