@@ -90,7 +90,7 @@ router.post('/users',[
     .isEmail()
     .withMessage('Please provide a valid email address'),
   check('password')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "password"'),
 ], async (req, res, next) => {
   try {

@@ -17,6 +17,8 @@ export default class UserSignIn extends Component {
       errors,
     } = this.state;
 
+
+
   return(
     <div className="bounds">
         <div className="grid-33 centered signin">
@@ -66,7 +68,7 @@ export default class UserSignIn extends Component {
 submit = () => {
   const { context } = this.props;
   const {username, password, errors} = this.state;
-  const { from } = this.props.location.state || { from : { pathname: '/' }}
+  const { from } = this.props.location.state || { from : this.props.history.goBack() }
 
   //resets errors state to empty if previous rendered errors exist * stops duplicates
   if(errors){

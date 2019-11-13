@@ -113,7 +113,7 @@ export default class UserSignUp extends Component {
         this.setState(prevState => ({
           errors: [...prevState.errors, "Passwords do not match"]
         }));
-      }
+      } else {
       //new user payload to create
       const newUser = {
          firstName,
@@ -131,7 +131,7 @@ export default class UserSignUp extends Component {
             } else if (error){
               //renders object containing array of errors from API
               this.setState({
-                errors: Object.values(error.errors) 
+                errors: Object.values(error.errors)
               })
 
             } else {
@@ -143,6 +143,7 @@ export default class UserSignUp extends Component {
             console.log(err);
           });
    }
+ }
 
     cancel = () => {
       this.props.history.push('/');

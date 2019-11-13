@@ -4,7 +4,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
 } from 'react-router-dom';
 
 import withContext from './Context';
@@ -46,7 +46,7 @@ export default () => (
           <Route path='/courses/:id' component={CourseDetailWithContext} />
           <Route path='/signin' component={UserSignInWithContext} />
           <Route path='/signout' component={UserSignOutWithContext} />
-          <Route path='/signup' component={UserSignUpWithContext} />
+          <Route path='/signup'  component={UserSignUpWithContext} />
           <Route path='/forbidden' component={Forbidden} />
           <Route path='/error' component={UnhandledError} />
           <Route path ='/notFound' component={NotFound} />
