@@ -45,9 +45,11 @@ export default class UpdateCourse extends Component {
       });
     //if userId and courseId do not match render forbidden.
     const courseUserId = this.state.course.userId;
+    if (courseUserId){
     if (authenticatedUserId !== courseUserId){
         this.props.history.push('/forbidden')
     }
+  }
   }
 
     render(){
