@@ -128,13 +128,13 @@ export default class UserSignUp extends Component {
             if (error === 500) {
               this.props.history.push('/error');
 
-            } else if (error){
+            } else if (error.errors){
               //renders object containing array of errors from API
               this.setState({
                 errors: Object.values(error.errors)
               })
 
-            } else {
+            } else if (error === 201){
               console.log(`${firstName} has successfully signed up!`);
               context.actions.signIn(emailAddress, password);
               this.props.history.push('/');

@@ -56,7 +56,10 @@ export default class UpdateCourse extends Component {
 
       let {
         user,
-        course,
+        title,
+        description,
+        materialsNeeded,
+        estimatedTime,
         errors
           } = this.state;
 
@@ -81,7 +84,7 @@ export default class UpdateCourse extends Component {
                        type="text"
                        className="input-title course--title--input"
                        placeholder="Course Title..."
-                       defaultValue={course.title}
+                       value={title}
                        onChange={this.change}/>
                    </div>
                   <p>By {user.firstName + ' ' + user.lastName}</p>
@@ -92,7 +95,7 @@ export default class UpdateCourse extends Component {
                       id="description"
                       name="description"
                       placeholder="Course Description..."
-                      defaultValue={course.description}
+                      value={description}
                       onChange={this.change}/>
                   </div>
                 </div>
@@ -109,7 +112,7 @@ export default class UpdateCourse extends Component {
                           type="text"
                           className="course--time--input"
                           placeholder="Hours"
-                          defaultValue={course.estimatedTime}
+                          value={estimatedTime}
                           onChange={this.change}/>
                       </div>
                     </li>
@@ -121,7 +124,7 @@ export default class UpdateCourse extends Component {
                           name="materialsNeeded"
                           className="course--materials--input"
                           placeholder="List materials..."
-                          defaultValue={course.materialsNeeded}
+                          value={materialsNeeded}
                           onChange={this.change}/>
                       </div>
                     </li>
@@ -142,6 +145,7 @@ export default class UpdateCourse extends Component {
 
       this.setState(() => {
         return {
+          //ES6 computed property name syntax
           [name]: value
         };
       });
